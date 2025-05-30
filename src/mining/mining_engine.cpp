@@ -23,15 +23,28 @@ MiningEngine::MiningEngine()
     
     stratum_client_ = std::make_unique<StratumClient>();
     
-    // Set Stratum callbacks
+    // Set Stratum callbacks - use simple lambda functions to avoid deadlock
     stratum_client_->set_job_callback(
-        [this](const StratumJob& job) { on_job_received(job); });
+        [this](const StratumJob& job) { 
+            std::lock_guard<std::mutex> lock(job_mutex_);
+            current_job_ = job;
+            job_available_ = true;
+            job_condition_.notify_all();
+            std::cout << "\nJob received: " << job.job_id << std::endl;
+        });
     stratum_client_->set_difficulty_callback(
-        [this](double difficulty) { on_difficulty_changed(difficulty); });
+        [this](double difficulty) { 
+            config_.target_difficulty = difficulty;
+            std::cout << "\nDifficulty: " << difficulty << std::endl;
+        });
     stratum_client_->set_error_callback(
-        [this](const std::string& error) { handle_error(error); });
+        [](const std::string& error) { 
+            std::cout << "\nStratum Error: " << error << std::endl; 
+        });
     stratum_client_->set_connect_callback(
-        [this](bool connected) { on_connection_status(connected); });
+        [](bool connected) { 
+            std::cout << "\nConnection: " << (connected ? "Connected" : "Disconnected") << std::endl;
+        });
 }
 
 MiningEngine::~MiningEngine() {
@@ -272,10 +285,10 @@ double MiningEngine::benchmark_performance(int duration_seconds) {
 }
 
 void MiningEngine::initialize_workers() {
-    std::lock_guard<std::mutex> lock(workers_mutex_);
-    
-    // Clean up existing worker threads
+    // First cleanup existing workers without holding the lock
     cleanup_workers();
+    
+    std::lock_guard<std::mutex> lock(workers_mutex_);
     
     // Create new worker threads
     workers_.reserve(config_.thread_count);
@@ -300,26 +313,46 @@ void MiningEngine::initialize_workers() {
 }
 
 void MiningEngine::cleanup_workers() {
-    std::lock_guard<std::mutex> lock(workers_mutex_);
+    // Signal all workers to stop
+    should_stop_ = true;
+    job_condition_.notify_all();
     
-    // Wait for all worker threads to finish
-    for (auto& worker : workers_) {
-        worker->state = WorkerState::STOPPED;
-        if (worker->worker_thread.joinable()) {
-            worker->worker_thread.join();
-        }
+    // Wait for all worker threads to finish with timeout
+    std::vector<std::unique_ptr<WorkerInfo>> workers_to_cleanup;
+    {
+        std::lock_guard<std::mutex> lock(workers_mutex_);
+        workers_to_cleanup = std::move(workers_);
+        workers_.clear();
     }
     
-    workers_.clear();
+    // Join threads outside of the lock
+    for (auto& worker : workers_to_cleanup) {
+        worker->state = WorkerState::STOPPED;
+        if (worker->worker_thread.joinable()) {
+            auto start = std::chrono::steady_clock::now();
+            while (worker->worker_thread.joinable() && 
+                   std::chrono::duration_cast<std::chrono::seconds>(
+                       std::chrono::steady_clock::now() - start).count() < 3) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            
+            if (worker->worker_thread.joinable()) {
+                worker->worker_thread.join();
+            }
+        }
+    }
 }
 
 void MiningEngine::worker_thread_function(WorkerInfo* worker) {
     worker->state = WorkerState::IDLE;
     
+    // Add debug output for worker startup
+    handle_status_change("Worker " + std::to_string(worker->worker_id) + " started and waiting for jobs");
+    
     while (!should_stop_ && worker->state != WorkerState::STOPPED) {
-        // Wait for mining job
+        // Wait for mining job with timeout to avoid deadlock
         std::unique_lock<std::mutex> lock(job_mutex_);
-        job_condition_.wait(lock, [this] { 
+        bool job_ready = job_condition_.wait_for(lock, std::chrono::seconds(1), [this] { 
             return job_available_ || should_stop_ || mining_paused_; 
         });
         
@@ -327,21 +360,37 @@ void MiningEngine::worker_thread_function(WorkerInfo* worker) {
         
         if (mining_paused_) {
             worker->state = WorkerState::PAUSED;
+            lock.unlock();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             continue;
         }
         
-        if (!job_available_) continue;
+        if (!job_ready || !job_available_) {
+            lock.unlock();
+            // Add periodic debug output for waiting workers
+            static auto last_debug = std::chrono::steady_clock::now();
+            auto now = std::chrono::steady_clock::now();
+            if (std::chrono::duration_cast<std::chrono::seconds>(now - last_debug).count() >= 10) {
+                handle_status_change("Worker " + std::to_string(worker->worker_id) + " still waiting for job (job_available=" + (job_available_ ? "true" : "false") + ")");
+                last_debug = now;
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            continue;
+        }
         
-        // Copy current job
+        // Copy current job and release lock immediately
         StratumJob job = current_job_;
         lock.unlock();
         
         // Start working
         worker->state = WorkerState::WORKING;
+        handle_status_change("Worker " + std::to_string(worker->worker_id) + " started processing job: " + job.job_id);
         process_mining_work(worker, job);
+        worker->state = WorkerState::IDLE;
     }
     
     worker->state = WorkerState::STOPPED;
+    handle_status_change("Worker " + std::to_string(worker->worker_id) + " stopped");
 }
 
 bool MiningEngine::process_mining_work(WorkerInfo* worker, const StratumJob& job) {
@@ -419,44 +468,21 @@ bool MiningEngine::check_and_submit_share(const StratumJob& job, uint32_t nonce,
     share.nonce = nonce;
     share.worker_name = config_.username;
     
-    // Submit share
+    // Submit share (do this before acquiring callback lock to avoid deadlock)
     bool success = stratum_client_->submit_share(share);
     
-    // Trigger callback
-    std::lock_guard<std::mutex> lock(callback_mutex_);
-    if (share_found_callback_) {
-        share_found_callback_(share, success);
+    // Trigger callback after submission
+    ShareFoundCallback callback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(callback_mutex_);
+        callback = share_found_callback_;
+    }
+    
+    if (callback) {
+        callback(share, success);
     }
     
     return success;
-}
-
-void MiningEngine::on_job_received(const StratumJob& job) {
-    std::lock_guard<std::mutex> lock(job_mutex_);
-    current_job_ = job;
-    job_available_ = true;
-    
-    // Redistribute nonce ranges
-    distribute_nonce_ranges();
-    
-    job_condition_.notify_all();
-    handle_status_change("Received new mining task: " + job.job_id);
-}
-
-void MiningEngine::on_difficulty_changed(double difficulty) {
-    config_.target_difficulty = difficulty;
-    handle_status_change("Difficulty updated: " + std::to_string(difficulty));
-}
-
-void MiningEngine::on_connection_status(bool connected) {
-    if (connected) {
-        handle_status_change("Connected to pool");
-    } else {
-        handle_status_change("Disconnected from pool");
-        if (mining_active_) {
-            pause_mining();
-        }
-    }
 }
 
 void MiningEngine::stats_update_loop() {
@@ -471,14 +497,14 @@ void MiningEngine::stats_update_loop() {
 }
 
 void MiningEngine::update_hashrate() {
-    std::lock_guard<std::mutex> lock(stats_mutex_);
-    
     auto now = std::chrono::steady_clock::now();
     auto duration = std::chrono::duration<double>(now - stats_.last_update).count();
     
     if (duration > 0) {
         // Calculate current hashrate
         uint64_t total_hashes = 0;
+        
+        // Get worker hashes without holding stats_mutex_ to avoid deadlock
         {
             std::lock_guard<std::mutex> worker_lock(workers_mutex_);
             for (const auto& worker : workers_) {
@@ -486,22 +512,31 @@ void MiningEngine::update_hashrate() {
             }
         }
         
-        stats_.current_hashrate = total_hashes / duration;
-        
-        // Calculate average hashrate
-        auto total_duration = std::chrono::duration<double>(now - stats_.start_time).count();
-        if (total_duration > 0) {
-            stats_.average_hashrate = stats_.total_hashes / total_duration;
+        // Now update stats with separate lock
+        {
+            std::lock_guard<std::mutex> lock(stats_mutex_);
+            stats_.current_hashrate = total_hashes / duration;
+            
+            // Calculate average hashrate
+            auto total_duration = std::chrono::duration<double>(now - stats_.start_time).count();
+            if (total_duration > 0) {
+                stats_.average_hashrate = stats_.total_hashes / total_duration;
+            }
+            
+            stats_.last_update = now;
         }
-        
-        stats_.last_update = now;
     }
 }
 
 void MiningEngine::trigger_stats_callback() {
-    std::lock_guard<std::mutex> lock(callback_mutex_);
-    if (stats_callback_) {
-        stats_callback_(stats_);
+    StatsCallback callback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(callback_mutex_);
+        callback = stats_callback_;
+    }
+    
+    if (callback) {
+        callback(stats_);
     }
 }
 
@@ -524,16 +559,26 @@ uint32_t MiningEngine::get_next_nonce_range(int worker_id, uint32_t range_size) 
 }
 
 void MiningEngine::handle_error(const std::string& error) {
-    std::lock_guard<std::mutex> lock(callback_mutex_);
-    if (error_callback_) {
-        error_callback_(error);
+    ErrorCallback callback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(callback_mutex_);
+        callback = error_callback_;
+    }
+    
+    if (callback) {
+        callback(error);
     }
 }
 
 void MiningEngine::handle_status_change(const std::string& status) {
-    std::lock_guard<std::mutex> lock(callback_mutex_);
-    if (status_callback_) {
-        status_callback_(status);
+    StatusCallback callback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(callback_mutex_);
+        callback = status_callback_;
+    }
+    
+    if (callback) {
+        callback(status);
     }
 }
 

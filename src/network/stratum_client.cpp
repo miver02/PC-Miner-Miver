@@ -248,8 +248,19 @@ void StratumClient::start_message_loop() {
 
 void StratumClient::stop_message_loop() {
     stop_flag_ = true;
+    
+    // Give some time for the thread to exit gracefully
     if (message_thread_.joinable()) {
-        message_thread_.join();
+        auto start = std::chrono::steady_clock::now();
+        while (message_thread_.joinable() && 
+               std::chrono::duration_cast<std::chrono::seconds>(
+                   std::chrono::steady_clock::now() - start).count() < 5) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        
+        if (message_thread_.joinable()) {
+            message_thread_.join();
+        }
     }
 }
 
@@ -323,13 +334,20 @@ std::string StratumClient::receive_line() {
 
 void StratumClient::message_loop() {
     while (!stop_flag_ && connected_) {
-        std::string line = receive_line();
-        if (!line.empty()) {
-            parse_json_response(line);
+        try {
+            std::string line = receive_line();
+            if (!line.empty() && connected_) {
+                parse_json_response(line);
+            } else if (!connected_) {
+                break;
+            }
+        } catch (const std::exception& e) {
+            handle_error("Message loop error: " + std::string(e.what()));
+            break;
         }
         
         // Short sleep to avoid high CPU usage
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -369,9 +387,15 @@ StratumMethod StratumClient::parse_method(const std::string& method_str) {
 
 bool StratumClient::handle_mining_notify(const std::string& json) {
     try {
+        // Add debug output
+        handle_error("Received mining.notify: " + json.substr(0, 200) + "...");
+        
         // Parse mining.notify parameters
         std::vector<std::string> params = SimpleJSON::get_array(json, "params");
-        if (params.size() < 9) return false;
+        if (params.size() < 9) {
+            handle_error("Invalid mining.notify: insufficient parameters (" + std::to_string(params.size()) + ")");
+            return false;
+        }
         
         StratumJob new_job;
         new_job.job_id = params[0];
@@ -391,10 +415,21 @@ bool StratumClient::handle_mining_notify(const std::string& json) {
         current_job_ = new_job;
         update_target_from_difficulty(current_difficulty_);
         
-        // Trigger job callback
-        std::lock_guard<std::mutex> lock(callback_mutex_);
-        if (job_callback_) {
-            job_callback_(current_job_);
+        handle_error("Successfully parsed job: " + new_job.job_id + ", clean_jobs=" + (new_job.clean_jobs ? "true" : "false"));
+        
+        // Get callback outside of lock to avoid deadlock
+        JobCallback callback = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(callback_mutex_);
+            callback = job_callback_;
+        }
+        
+        // Trigger job callback outside of lock
+        if (callback) {
+            handle_error("Triggering job callback for job: " + new_job.job_id);
+            callback(current_job_);
+        } else {
+            handle_error("No job callback set!");
         }
         
         return true;
@@ -415,10 +450,16 @@ bool StratumClient::handle_mining_set_difficulty(const std::string& json) {
         // Update target value
         update_target_from_difficulty(new_difficulty);
         
-        // Trigger difficulty callback
-        std::lock_guard<std::mutex> lock(callback_mutex_);
-        if (difficulty_callback_) {
-            difficulty_callback_(new_difficulty);
+        // Get callback outside of lock to avoid deadlock
+        DifficultyCallback callback = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(callback_mutex_);
+            callback = difficulty_callback_;
+        }
+        
+        // Trigger difficulty callback outside of lock
+        if (callback) {
+            callback(new_difficulty);
         }
         
         return true;
@@ -521,9 +562,14 @@ std::string StratumClient::string_to_hex(const std::string& str) {
 }
 
 void StratumClient::handle_error(const std::string& error) {
-    std::lock_guard<std::mutex> lock(callback_mutex_);
-    if (error_callback_) {
-        error_callback_(error);
+    ErrorCallback callback = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(callback_mutex_);
+        callback = error_callback_;
+    }
+    
+    if (callback) {
+        callback(error);
     }
 }
 
@@ -532,8 +578,15 @@ void StratumClient::handle_connection_lost() {
         connected_ = false;
         close_socket();
         
-        if (connect_callback_) {
-            connect_callback_(false);
+        // Get callback outside of any locks to avoid deadlock
+        ConnectCallback callback = nullptr;
+        {
+            std::lock_guard<std::mutex> lock(callback_mutex_);
+            callback = connect_callback_;
+        }
+        
+        if (callback) {
+            callback(false);
         }
     }
 }

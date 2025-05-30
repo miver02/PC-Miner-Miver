@@ -265,7 +265,25 @@ void main_loop(MiningEngine& engine) {
     });
     
     std::cout << "\n=== PC Mining Program ===" << std::endl;
-    std::cout << "Press 's' to start mining, 'q' to quit, 'h' for help" << std::endl;
+    std::cout << "Auto-starting mining..." << std::endl;
+    
+    // Auto-start mining
+    std::cout << "Connecting to pool and starting mining..." << std::endl;
+    if (engine.connect_to_pool()) {
+        std::cout << "Connected to pool successfully!" << std::endl;
+        // Wait a moment for initial job
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        if (engine.start_mining()) {
+            mining_started = true;
+            std::cout << "Mining started successfully!" << std::endl;
+        } else {
+            std::cout << "Failed to start mining!" << std::endl;
+        }
+    } else {
+        std::cout << "Failed to connect to pool!" << std::endl;
+    }
+    
+    std::cout << "Press 's' to stop/start mining, 'q' to quit, 'h' for help" << std::endl;
     
     while (g_running) {
         if (check_keyboard_hit()) {

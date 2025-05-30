@@ -29,7 +29,7 @@
 
 4. **开始挖矿**
    ```bash
-   # 连接到矿池（请替换为真实的矿池信息）
+   # 连接到矿池（请替换为真实的矿池信息） ./pcminer.exe -p stratum+tcp://public-pool.io -P 21496 -u 12yYM9Mbr4rrRSeptxsr7PVZ3G3gM9MFt6
    pcminer.exe -p stratum.slushpool.com -P 3333 -u your_username.worker
    ```
 
