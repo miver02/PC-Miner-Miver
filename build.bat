@@ -145,7 +145,7 @@ if exist "Release\pcminer.exe" (
     if not errorlevel 1 (
         echo [OK] Program runs correctly
     ) else (
-        echo [!] Program test failed
+        echo [NO] Program test failed
     )
     
     echo.

@@ -61,7 +61,7 @@ make -j$(nproc)
 ### 基本用法
 
 ```bash
-# 基本挖矿命令
+# 基本挖矿命令  
 ./pcminer -p stratum+tcp://pool.example.com -P 3333 -u your_username
 
 # 指定线程数和批处理大小

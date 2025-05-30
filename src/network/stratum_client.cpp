@@ -119,7 +119,21 @@ bool StratumClient::connect(const std::string& host, int port) {
         disconnect();
     }
     
-    host_ = host;
+    // Parse URL if it contains protocol prefix
+    std::string actual_host = host;
+    if (host.find("stratum+tcp://") == 0) {
+        actual_host = host.substr(14); // Remove "stratum+tcp://" prefix
+    } else if (host.find("stratum://") == 0) {
+        actual_host = host.substr(10); // Remove "stratum://" prefix
+    }
+    
+    // Remove any trailing path or parameters
+    size_t slash_pos = actual_host.find('/');
+    if (slash_pos != std::string::npos) {
+        actual_host = actual_host.substr(0, slash_pos);
+    }
+    
+    host_ = actual_host;
     port_ = port;
     
     if (!create_socket()) {
@@ -127,7 +141,7 @@ bool StratumClient::connect(const std::string& host, int port) {
     }
     
     // Resolve hostname
-    struct hostent* he = gethostbyname(host.c_str());
+    struct hostent* he = gethostbyname(actual_host.c_str());
     if (!he) {
         close_socket();
         return false;
