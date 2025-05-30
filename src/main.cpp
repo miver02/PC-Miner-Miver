@@ -265,37 +265,50 @@ void main_loop(MiningEngine& engine) {
     });
     
     std::cout << "\n=== PC Mining Program ===" << std::endl;
-    std::cout << "Auto-starting mining..." << std::endl;
+    std::cout << "Commands: 's' = start/stop, 'p' = pause/resume, 'r' = reset stats, 'i' = show stats, 'w' = workers, 'h' = help, 'q' = quit" << std::endl;
     
-    // Auto-start mining
-    std::cout << "Connecting to pool and starting mining..." << std::endl;
-    if (engine.connect_to_pool()) {
-        std::cout << "Connected to pool successfully!" << std::endl;
-        // Wait a moment for initial job
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        if (engine.start_mining()) {
-            mining_started = true;
-            std::cout << "Mining started successfully!" << std::endl;
-        } else {
-            std::cout << "Failed to start mining!" << std::endl;
-        }
-    } else {
+    // Connect to pool
+    std::cout << "Connecting to pool..." << std::endl;
+    if (!engine.connect_to_pool()) {
         std::cout << "Failed to connect to pool!" << std::endl;
+        return;
     }
     
-    std::cout << "Press 's' to stop/start mining, 'q' to quit, 'h' for help" << std::endl;
+    std::cout << "Connected to pool successfully!" << std::endl;
+    std::cout << "Waiting for jobs..." << std::endl;
     
+    // Wait a bit for initial job
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+    
+    // Start mining automatically
+    std::cout << "Starting mining..." << std::endl;
+    if (engine.start_mining()) {
+        mining_started = true;
+        std::cout << "Mining started!" << std::endl;
+    } else {
+        std::cout << "Failed to start mining!" << std::endl;
+    }
+    
+    // Set up automatic stats display
+    auto last_stats_display = std::chrono::steady_clock::now();
+    const auto stats_display_interval = std::chrono::seconds(30); // 每30秒显示一次算力
+    
+    std::cout << "\nPress 'i' to show stats, 'w' to show workers, or any other key for commands..." << std::endl;
+    
+    // Main command loop
     while (g_running) {
+        // Check for keyboard input (non-blocking)
         if (check_keyboard_hit()) {
-            char key = get_keyboard_char();
+            char cmd = get_keyboard_char();
             
-            switch (key) {
+            switch (cmd) {
                 case 's':
                 case 'S':
                     if (!mining_started) {
-                        std::cout << "Connecting to pool and starting mining..." << std::endl;
-                        if (engine.connect_to_pool() && engine.start_mining()) {
+                        std::cout << "Starting mining..." << std::endl;
+                        if (engine.start_mining()) {
                             mining_started = true;
+                            mining_paused = false;
                             std::cout << "Mining started!" << std::endl;
                         } else {
                             std::cout << "Failed to start mining!" << std::endl;
@@ -303,8 +316,8 @@ void main_loop(MiningEngine& engine) {
                     } else {
                         std::cout << "Stopping mining..." << std::endl;
                         engine.stop_mining();
-                        engine.disconnect_from_pool();
                         mining_started = false;
+                        mining_paused = false;
                         std::cout << "Mining stopped!" << std::endl;
                     }
                     break;
@@ -313,64 +326,74 @@ void main_loop(MiningEngine& engine) {
                 case 'P':
                     if (mining_started) {
                         if (!mining_paused) {
+                            std::cout << "Pausing mining..." << std::endl;
                             engine.pause_mining();
                             mining_paused = true;
-                            std::cout << "Mining paused" << std::endl;
+                            std::cout << "Mining paused!" << std::endl;
                         } else {
+                            std::cout << "Resuming mining..." << std::endl;
                             engine.resume_mining();
                             mining_paused = false;
-                            std::cout << "Mining resumed" << std::endl;
+                            std::cout << "Mining resumed!" << std::endl;
                         }
                     } else {
-                        std::cout << "Mining not started yet" << std::endl;
+                        std::cout << "Mining is not started!" << std::endl;
                     }
-                    break;
-                    
-                case 'r':
-                case 'R':
-                    engine.reset_stats();
-                    std::cout << "Statistics reset" << std::endl;
                     break;
                     
                 case 'i':
                 case 'I':
-                    {
-                        const auto& stats = engine.get_stats();
-                        show_stats(stats);
-                        
-                        auto workers = engine.get_worker_info();
-                        show_worker_info(workers);
-                    }
+                    show_stats(engine.get_stats());
                     break;
                     
-                case 'h':
-                case 'H':
-                    show_help();
+                case 'w':
+                case 'W':
+                    show_worker_info(engine.get_worker_info());
+                    break;
+                    
+                case 'r':
+                case 'R':
+                    std::cout << "Resetting statistics..." << std::endl;
+                    engine.reset_stats();
+                    std::cout << "Statistics reset!" << std::endl;
                     break;
                     
                 case 'q':
                 case 'Q':
+                    std::cout << "Shutting down..." << std::endl;
                     g_running = false;
                     break;
                     
+                case 'h':
+                case 'H':
+                    std::cout << "\n=== Help - Available Commands ===" << std::endl;
+                    std::cout << "s/S - Start/Stop mining" << std::endl;
+                    std::cout << "p/P - Pause/Resume mining" << std::endl;
+                    std::cout << "r/R - Reset statistics" << std::endl;
+                    std::cout << "i/I - Show detailed statistics" << std::endl;
+                    std::cout << "w/W - Show worker thread info" << std::endl;
+                    std::cout << "h/H - Show this help" << std::endl;
+                    std::cout << "q/Q - Quit program" << std::endl;
+                    std::cout << "=================================" << std::endl;
+                    break;
+                    
                 default:
-                    std::cout << "Unknown command: " << key << std::endl;
+                    std::cout << "Commands: 's' = start/stop, 'p' = pause/resume, 'r' = reset stats, 'i' = show stats, 'w' = workers, 'h' = help, 'q' = quit" << std::endl;
                     break;
             }
         }
         
-        // Periodically show statistics
-        static auto last_stats_time = std::chrono::steady_clock::now();
+        // Check if it's time to display stats automatically
         auto now = std::chrono::steady_clock::now();
         if (mining_started && !mining_paused && 
-            std::chrono::duration_cast<std::chrono::seconds>(now - last_stats_time).count() >= 30) {
-            const auto& stats = engine.get_stats();
-            std::cout << "\nCurrent hashrate: " << std::fixed << std::setprecision(2) 
-                      << stats.current_hashrate.load() / 1000.0 << " kH/s, "
-                      << "Total hashes: " << stats.total_hashes.load() << std::endl;
-            last_stats_time = now;
+            std::chrono::duration_cast<std::chrono::seconds>(now - last_stats_display) >= stats_display_interval) {
+            
+            std::cout << "\n=== Auto Stats Update ===" << std::endl;
+            show_stats(engine.get_stats());
+            last_stats_display = now;
         }
         
+        // Small sleep to avoid high CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
     
@@ -378,7 +401,6 @@ void main_loop(MiningEngine& engine) {
     if (mining_started) {
         std::cout << "Stopping mining..." << std::endl;
         engine.stop_mining();
-        engine.disconnect_from_pool();
     }
 }
 

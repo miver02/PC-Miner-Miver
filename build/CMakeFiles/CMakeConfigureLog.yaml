@@ -24,7 +24,7 @@ events:
       The output was:
       0
       适用于 .NET Framework MSBuild 版本 17.14.10+8b8e13593
-      生成启动时间为 2025/5/30 16:08:12。
+      生成启动时间为 2025/5/30 17:54:06。
       
       节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\4.0.0\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)。
       PrepareForBuild:
@@ -53,7 +53,7 @@ events:
           0 个警告
           0 个错误
       
-      已用时间 00:00:01.23
+      已用时间 00:00:01.22
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -72,8 +72,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-7g7eyw"
-      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-7g7eyw"
+      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-tijz4q"
+      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-tijz4q"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -83,40 +83,40 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-7g7eyw'
+        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-tijz4q'
         
-        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_a5de8.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_e647a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         适用于 .NET Framework MSBuild 版本 17.14.10+8b8e13593
-        生成启动时间为 2025/5/30 16:08:14。
+        生成启动时间为 2025/5/30 17:54:08。
         
-        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-7g7eyw\\cmTC_a5de8.vcxproj”(默认目标)。
+        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-tijz4q\\cmTC_e647a.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_a5de8.dir\\Debug\\”。
+          正在创建目录“cmTC_e647a.dir\\Debug\\”。
           已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
-          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-7g7eyw\\Debug\\”。
-          正在创建目录“cmTC_a5de8.dir\\Debug\\cmTC_a5de8.tlog\\”。
+          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-tijz4q\\Debug\\”。
+          正在创建目录“cmTC_e647a.dir\\Debug\\cmTC_e647a.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_a5de8.dir\\Debug\\cmTC_a5de8.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-          正在对“cmTC_a5de8.dir\\Debug\\cmTC_a5de8.tlog\\unsuccessfulbuild”执行 Touch 任务。
+          正在创建“cmTC_e647a.dir\\Debug\\cmTC_e647a.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在对“cmTC_e647a.dir\\Debug\\cmTC_e647a.tlog\\unsuccessfulbuild”执行 Touch 任务。
         ClCompile:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_a5de8.dir\\Debug\\\\" /Fd"cmTC_a5de8.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\python3.12\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_e647a.dir\\Debug\\\\" /Fd"cmTC_e647a.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\python3.12\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.44.35208 版
           版权所有(C) Microsoft Corporation。保留所有权利。
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_a5de8.dir\\Debug\\\\" /Fd"cmTC_a5de8.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\python3.12\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_e647a.dir\\Debug\\\\" /Fd"cmTC_e647a.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\python3.12\\Lib\\site-packages\\cmake\\data\\share\\cmake-4.0\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-7g7eyw\\Debug\\cmTC_a5de8.exe" /INCREMENTAL /ILK:"cmTC_a5de8.dir\\Debug\\cmTC_a5de8.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-7g7eyw/Debug/cmTC_a5de8.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-7g7eyw/Debug/cmTC_a5de8.lib" /MACHINE:X64  /machine:x64 cmTC_a5de8.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_a5de8.vcxproj -> D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-7g7eyw\\Debug\\cmTC_a5de8.exe
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-tijz4q\\Debug\\cmTC_e647a.exe" /INCREMENTAL /ILK:"cmTC_e647a.dir\\Debug\\cmTC_e647a.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-tijz4q/Debug/cmTC_e647a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-tijz4q/Debug/cmTC_e647a.lib" /MACHINE:X64  /machine:x64 cmTC_e647a.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_e647a.vcxproj -> D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-tijz4q\\Debug\\cmTC_e647a.exe
         FinalizeBuildStatus:
-          正在删除文件“cmTC_a5de8.dir\\Debug\\cmTC_a5de8.tlog\\unsuccessfulbuild”。
-          正在对“cmTC_a5de8.dir\\Debug\\cmTC_a5de8.tlog\\cmTC_a5de8.lastbuildstate”执行 Touch 任务。
-        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-7g7eyw\\cmTC_a5de8.vcxproj”(默认目标)的操作。
+          正在删除文件“cmTC_e647a.dir\\Debug\\cmTC_e647a.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_e647a.dir\\Debug\\cmTC_e647a.tlog\\cmTC_e647a.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-tijz4q\\cmTC_e647a.vcxproj”(默认目标)的操作。
         
         已成功生成。
             0 个警告
             0 个错误
         
-        已用时间 00:00:01.22
+        已用时间 00:00:01.23
         
       exitCode: 0
   -
@@ -158,8 +158,8 @@ events:
     checks:
       - "Performing Test CMAKE_HAVE_LIBC_PTHREAD"
     directories:
-      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-lzrrdo"
-      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-lzrrdo"
+      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-4mkvdv"
+      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-4mkvdv"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -168,40 +168,40 @@ events:
       variable: "CMAKE_HAVE_LIBC_PTHREAD"
       cached: true
       stdout: |
-        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-lzrrdo'
+        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-4mkvdv'
         
-        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_f22b2.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_85b2e.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         适用于 .NET Framework MSBuild 版本 17.14.10+8b8e13593
-        生成启动时间为 2025/5/30 16:08:16。
+        生成启动时间为 2025/5/30 17:54:10。
         
-        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\cmTC_f22b2.vcxproj”(默认目标)。
+        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\cmTC_85b2e.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_f22b2.dir\\Debug\\”。
+          正在创建目录“cmTC_85b2e.dir\\Debug\\”。
           已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
-          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\Debug\\”。
-          正在创建目录“cmTC_f22b2.dir\\Debug\\cmTC_f22b2.tlog\\”。
+          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\Debug\\”。
+          正在创建目录“cmTC_85b2e.dir\\Debug\\cmTC_85b2e.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_f22b2.dir\\Debug\\cmTC_f22b2.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-          正在对“cmTC_f22b2.dir\\Debug\\cmTC_f22b2.tlog\\unsuccessfulbuild”执行 Touch 任务。
+          正在创建“cmTC_85b2e.dir\\Debug\\cmTC_85b2e.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在对“cmTC_85b2e.dir\\Debug\\cmTC_85b2e.tlog\\unsuccessfulbuild”执行 Touch 任务。
         ClCompile:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_f22b2.dir\\Debug\\\\" /Fd"cmTC_f22b2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\src.cxx"
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_85b2e.dir\\Debug\\\\" /Fd"cmTC_85b2e.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\src.cxx"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.44.35208 版
           版权所有(C) Microsoft Corporation。保留所有权利。
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_f22b2.dir\\Debug\\\\" /Fd"cmTC_f22b2.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\src.cxx"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CMAKE_HAVE_LIBC_PTHREAD /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_85b2e.dir\\Debug\\\\" /Fd"cmTC_85b2e.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\src.cxx"
           src.cxx
-        D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\src.cxx(1,10): error C1083: 无法打开包括文件: “pthread.h”: No such file or directory [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\cmTC_f22b2.vcxproj]
-        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\cmTC_f22b2.vcxproj”(默认目标)的操作 - 失败。
+        D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\src.cxx(1,10): error C1083: 无法打开包括文件: “pthread.h”: No such file or directory [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\cmTC_85b2e.vcxproj]
+        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\cmTC_85b2e.vcxproj”(默认目标)的操作 - 失败。
         
         生成失败。
         
-        “D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\cmTC_f22b2.vcxproj”(默认目标) (1) ->
+        “D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\cmTC_85b2e.vcxproj”(默认目标) (1) ->
         (ClCompile 目标) -> 
-          D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\src.cxx(1,10): error C1083: 无法打开包括文件: “pthread.h”: No such file or directory [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-lzrrdo\\cmTC_f22b2.vcxproj]
+          D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\src.cxx(1,10): error C1083: 无法打开包括文件: “pthread.h”: No such file or directory [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-4mkvdv\\cmTC_85b2e.vcxproj]
         
             0 个警告
             1 个错误
         
-        已用时间 00:00:00.71
+        已用时间 00:00:00.73
         
       exitCode: 1
   -
@@ -214,8 +214,8 @@ events:
     checks:
       - "Looking for pthread_create in pthreads"
     directories:
-      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-ogoeyb"
-      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-ogoeyb"
+      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-6o81s4"
+      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-6o81s4"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -224,42 +224,42 @@ events:
       variable: "CMAKE_HAVE_PTHREADS_CREATE"
       cached: true
       stdout: |
-        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-ogoeyb'
+        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-6o81s4'
         
-        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_285a1.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_71705.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         适用于 .NET Framework MSBuild 版本 17.14.10+8b8e13593
-        生成启动时间为 2025/5/30 16:08:17。
+        生成启动时间为 2025/5/30 17:54:11。
         
-        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\cmTC_285a1.vcxproj”(默认目标)。
+        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\cmTC_71705.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_285a1.dir\\Debug\\”。
+          正在创建目录“cmTC_71705.dir\\Debug\\”。
           已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
-          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\Debug\\”。
-          正在创建目录“cmTC_285a1.dir\\Debug\\cmTC_285a1.tlog\\”。
+          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\Debug\\”。
+          正在创建目录“cmTC_71705.dir\\Debug\\cmTC_71705.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_285a1.dir\\Debug\\cmTC_285a1.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-          正在对“cmTC_285a1.dir\\Debug\\cmTC_285a1.tlog\\unsuccessfulbuild”执行 Touch 任务。
+          正在创建“cmTC_71705.dir\\Debug\\cmTC_71705.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在对“cmTC_71705.dir\\Debug\\cmTC_71705.tlog\\unsuccessfulbuild”执行 Touch 任务。
         ClCompile:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_285a1.dir\\Debug\\\\" /Fd"cmTC_285a1.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\CheckFunctionExists.cxx"
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_71705.dir\\Debug\\\\" /Fd"cmTC_71705.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\CheckFunctionExists.cxx"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.44.35208 版
           版权所有(C) Microsoft Corporation。保留所有权利。
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_285a1.dir\\Debug\\\\" /Fd"cmTC_285a1.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\CheckFunctionExists.cxx"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_71705.dir\\Debug\\\\" /Fd"cmTC_71705.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\CheckFunctionExists.cxx"
           CheckFunctionExists.cxx
         Link:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\Debug\\cmTC_285a1.exe" /INCREMENTAL /ILK:"cmTC_285a1.dir\\Debug\\cmTC_285a1.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-ogoeyb/Debug/cmTC_285a1.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-ogoeyb/Debug/cmTC_285a1.lib" /MACHINE:X64  /machine:x64 cmTC_285a1.dir\\Debug\\CheckFunctionExists.obj
-        LINK : fatal error LNK1104: 无法打开文件“pthreads.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\cmTC_285a1.vcxproj]
-        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\cmTC_285a1.vcxproj”(默认目标)的操作 - 失败。
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\Debug\\cmTC_71705.exe" /INCREMENTAL /ILK:"cmTC_71705.dir\\Debug\\cmTC_71705.ilk" /NOLOGO pthreads.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-6o81s4/Debug/cmTC_71705.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-6o81s4/Debug/cmTC_71705.lib" /MACHINE:X64  /machine:x64 cmTC_71705.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: 无法打开文件“pthreads.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\cmTC_71705.vcxproj]
+        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\cmTC_71705.vcxproj”(默认目标)的操作 - 失败。
         
         生成失败。
         
-        “D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\cmTC_285a1.vcxproj”(默认目标) (1) ->
+        “D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\cmTC_71705.vcxproj”(默认目标) (1) ->
         (Link 目标) -> 
-          LINK : fatal error LNK1104: 无法打开文件“pthreads.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-ogoeyb\\cmTC_285a1.vcxproj]
+          LINK : fatal error LNK1104: 无法打开文件“pthreads.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-6o81s4\\cmTC_71705.vcxproj]
         
             0 个警告
             1 个错误
         
-        已用时间 00:00:00.95
+        已用时间 00:00:00.99
         
       exitCode: 1
   -
@@ -272,8 +272,8 @@ events:
     checks:
       - "Looking for pthread_create in pthread"
     directories:
-      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-obtn54"
-      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-obtn54"
+      source: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-142nsr"
+      binary: "D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-142nsr"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -282,42 +282,42 @@ events:
       variable: "CMAKE_HAVE_PTHREAD_CREATE"
       cached: true
       stdout: |
-        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-obtn54'
+        Change Dir: 'D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-142nsr'
         
-        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_5c602.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "D:/Download/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_2c47b.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         适用于 .NET Framework MSBuild 版本 17.14.10+8b8e13593
-        生成启动时间为 2025/5/30 16:08:19。
+        生成启动时间为 2025/5/30 17:54:12。
         
-        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\cmTC_5c602.vcxproj”(默认目标)。
+        节点 1 上的项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\cmTC_2c47b.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_5c602.dir\\Debug\\”。
+          正在创建目录“cmTC_2c47b.dir\\Debug\\”。
           已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
-          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\Debug\\”。
-          正在创建目录“cmTC_5c602.dir\\Debug\\cmTC_5c602.tlog\\”。
+          正在创建目录“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\Debug\\”。
+          正在创建目录“cmTC_2c47b.dir\\Debug\\cmTC_2c47b.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_5c602.dir\\Debug\\cmTC_5c602.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
-          正在对“cmTC_5c602.dir\\Debug\\cmTC_5c602.tlog\\unsuccessfulbuild”执行 Touch 任务。
+          正在创建“cmTC_2c47b.dir\\Debug\\cmTC_2c47b.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在对“cmTC_2c47b.dir\\Debug\\cmTC_2c47b.tlog\\unsuccessfulbuild”执行 Touch 任务。
         ClCompile:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_5c602.dir\\Debug\\\\" /Fd"cmTC_5c602.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\CheckFunctionExists.cxx"
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_2c47b.dir\\Debug\\\\" /Fd"cmTC_2c47b.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\CheckFunctionExists.cxx"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.44.35208 版
           版权所有(C) Microsoft Corporation。保留所有权利。
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_5c602.dir\\Debug\\\\" /Fd"cmTC_5c602.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\CheckFunctionExists.cxx"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D CHECK_FUNCTION_EXISTS=pthread_create /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"cmTC_2c47b.dir\\Debug\\\\" /Fd"cmTC_2c47b.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\CheckFunctionExists.cxx"
           CheckFunctionExists.cxx
         Link:
-          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\Debug\\cmTC_5c602.exe" /INCREMENTAL /ILK:"cmTC_5c602.dir\\Debug\\cmTC_5c602.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-obtn54/Debug/cmTC_5c602.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-obtn54/Debug/cmTC_5c602.lib" /MACHINE:X64  /machine:x64 cmTC_5c602.dir\\Debug\\CheckFunctionExists.obj
-        LINK : fatal error LNK1104: 无法打开文件“pthread.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\cmTC_5c602.vcxproj]
-        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\cmTC_5c602.vcxproj”(默认目标)的操作 - 失败。
+          D:\\Download\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\Debug\\cmTC_2c47b.exe" /INCREMENTAL /ILK:"cmTC_2c47b.dir\\Debug\\cmTC_2c47b.ilk" /NOLOGO pthread.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-142nsr/Debug/cmTC_2c47b.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/CMakeScratch/TryCompile-142nsr/Debug/cmTC_2c47b.lib" /MACHINE:X64  /machine:x64 cmTC_2c47b.dir\\Debug\\CheckFunctionExists.obj
+        LINK : fatal error LNK1104: 无法打开文件“pthread.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\cmTC_2c47b.vcxproj]
+        已完成生成项目“D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\cmTC_2c47b.vcxproj”(默认目标)的操作 - 失败。
         
         生成失败。
         
-        “D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\cmTC_5c602.vcxproj”(默认目标) (1) ->
+        “D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\cmTC_2c47b.vcxproj”(默认目标) (1) ->
         (Link 目标) -> 
-          LINK : fatal error LNK1104: 无法打开文件“pthread.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-obtn54\\cmTC_5c602.vcxproj]
+          LINK : fatal error LNK1104: 无法打开文件“pthread.lib” [D:\\Download\\git\\GitWarehouse\\PC-Miner-Miver\\build\\CMakeFiles\\CMakeScratch\\TryCompile-142nsr\\cmTC_2c47b.vcxproj]
         
             0 个警告
             1 个错误
         
-        已用时间 00:00:00.92
+        已用时间 00:00:00.94
         
       exitCode: 1
 ...
