@@ -1,0 +1,10 @@
+^D:\DOWNLOAD\GIT\GITWAREHOUSE\PC-MINER-MIVER\CMAKELISTS.TXT
+setlocal
+D:\Download\python3.12\Lib\site-packages\cmake\data\bin\cmake.exe -SD:/Download/git/GitWarehouse/PC-Miner-Miver -BD:/Download/git/GitWarehouse/PC-Miner-Miver/build --check-stamp-file D:/Download/git/GitWarehouse/PC-Miner-Miver/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

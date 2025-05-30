@@ -15,7 +15,7 @@
     #include <sched.h>
 #endif
 
-// MiningEngine实现
+// MiningEngine implementation
 MiningEngine::MiningEngine() 
     : mining_active_(false), mining_paused_(false), should_stop_(false),
       job_available_(false), stats_thread_running_(false),
@@ -23,13 +23,13 @@ MiningEngine::MiningEngine()
     
     stratum_client_ = std::make_unique<StratumClient>();
     
-    // 设置Stratum回调
+    // Set Stratum callbacks
     stratum_client_->set_job_callback(
         [this](const StratumJob& job) { on_job_received(job); });
     stratum_client_->set_difficulty_callback(
         [this](double difficulty) { on_difficulty_changed(difficulty); });
     stratum_client_->set_error_callback(
-        [this](const std::string& error) { on_stratum_error(error); });
+        [this](const std::string& error) { handle_error(error); });
     stratum_client_->set_connect_callback(
         [this](bool connected) { on_connection_status(connected); });
 }
@@ -43,7 +43,7 @@ MiningEngine::~MiningEngine() {
 void MiningEngine::set_config(const MiningConfig& config) {
     config_ = config;
     
-    // 验证配置
+    // Validate configuration
     if (config_.thread_count <= 0) {
         config_.thread_count = std::thread::hardware_concurrency();
         if (config_.thread_count == 0) config_.thread_count = 4;
@@ -62,7 +62,7 @@ bool MiningEngine::start_mining() {
     }
     
     if (!stratum_client_->is_connected()) {
-        handle_error("未连接到矿池，无法开始挖矿");
+        handle_error("Not connected to pool, cannot start mining");
         return false;
     }
     
@@ -70,19 +70,19 @@ bool MiningEngine::start_mining() {
     mining_active_ = true;
     mining_paused_ = false;
     
-    // 重置统计信息
+    // Reset statistics
     stats_.reset();
     
-    // 初始化工作线程
+    // Initialize worker threads
     initialize_workers();
     
-    // 启动统计更新线程
+    // Start statistics update thread
     if (!stats_thread_running_) {
         stats_thread_running_ = true;
         stats_thread_ = std::thread(&MiningEngine::stats_update_loop, this);
     }
     
-    handle_status_change("挖矿已开始");
+    handle_status_change("Mining started");
     return true;
 }
 
@@ -95,10 +95,10 @@ void MiningEngine::stop_mining() {
     mining_active_ = false;
     mining_paused_ = false;
     
-    // 通知所有等待的线程
+    // Notify all waiting threads
     job_condition_.notify_all();
     
-    // 停止统计线程
+    // Stop statistics thread
     if (stats_thread_running_) {
         stats_thread_running_ = false;
         if (stats_thread_.joinable()) {
@@ -106,10 +106,10 @@ void MiningEngine::stop_mining() {
         }
     }
     
-    // 清理工作线程
+    // Cleanup worker threads
     cleanup_workers();
     
-    handle_status_change("挖矿已停止");
+    handle_status_change("Mining stopped");
 }
 
 void MiningEngine::pause_mining() {
@@ -118,7 +118,7 @@ void MiningEngine::pause_mining() {
     }
     
     mining_paused_ = true;
-    handle_status_change("挖矿已暂停");
+    handle_status_change("Mining paused");
 }
 
 void MiningEngine::resume_mining() {
@@ -128,7 +128,7 @@ void MiningEngine::resume_mining() {
     
     mining_paused_ = false;
     job_condition_.notify_all();
-    handle_status_change("挖矿已恢复");
+    handle_status_change("Mining resumed");
 }
 
 bool MiningEngine::is_mining() const {
@@ -137,35 +137,35 @@ bool MiningEngine::is_mining() const {
 
 bool MiningEngine::connect_to_pool() {
     if (config_.pool_host.empty()) {
-        handle_error("矿池地址未配置");
+        handle_error("Pool address not configured");
         return false;
     }
     
-    handle_status_change("正在连接到矿池: " + config_.pool_host + ":" + std::to_string(config_.pool_port));
+    handle_status_change("Connecting to pool: " + config_.pool_host + ":" + std::to_string(config_.pool_port));
     
     if (!stratum_client_->connect(config_.pool_host, config_.pool_port)) {
-        handle_error("连接矿池失败");
+        handle_error("Failed to connect to pool");
         return false;
     }
     
-    // 启动消息处理循环
+    // Start message processing loop
     stratum_client_->start_message_loop();
     
-    // 订阅挖矿服务
+    // Subscribe to mining service
     if (!stratum_client_->subscribe()) {
-        handle_error("订阅挖矿服务失败");
+        handle_error("Failed to subscribe to mining service");
         return false;
     }
     
-    // 认证用户
+    // Authenticate user
     if (!stratum_client_->authorize(config_.username, config_.password)) {
-        handle_error("用户认证失败");
+        handle_error("User authentication failed");
         return false;
     }
     
-    handle_status_change("已连接到矿池");
+    handle_status_change("Connected to pool");
     
-    // 启动自动重连线程
+    // Start auto reconnect thread
     if (config_.auto_reconnect && !reconnect_thread_running_) {
         reconnect_thread_running_ = true;
         reconnect_thread_ = std::thread(&MiningEngine::auto_reconnect_loop, this);
@@ -184,7 +184,7 @@ void MiningEngine::disconnect_from_pool() {
     
     stratum_client_->stop_message_loop();
     stratum_client_->disconnect();
-    handle_status_change("已断开矿池连接");
+    handle_status_change("Disconnected from pool");
 }
 
 bool MiningEngine::is_connected() const {
@@ -226,9 +226,9 @@ std::vector<WorkerInfo*> MiningEngine::get_worker_info() const {
 }
 
 double MiningEngine::benchmark_performance(int duration_seconds) {
-    handle_status_change("开始性能测试...");
+    handle_status_change("Starting performance test...");
     
-    // 创建测试任务
+    // Create test job
     StratumJob test_job;
     test_job.job_id = "benchmark";
     test_job.prev_block_hash = "0000000000000000000000000000000000000000000000000000000000000000";
@@ -236,26 +236,26 @@ double MiningEngine::benchmark_performance(int duration_seconds) {
     test_job.nbits = "1d00ffff";
     test_job.ntime = "5f2a7b5f";
     
-    // 创建SHA256上下文
+    // Create SHA256 context
     SHA256Context ctx;
     uint64_t total_hashes = 0;
     auto start_time = std::chrono::steady_clock::now();
     auto end_time = start_time + std::chrono::seconds(duration_seconds);
     
-    // 运行基准测试
+    // Run benchmark test
     while (std::chrono::steady_clock::now() < end_time) {
         uint8_t hash[32];
         uint32_t nonce = static_cast<uint32_t>(total_hashes);
         
         if (config_.enable_optimization) {
-            SHA256Core::sha256_transform_optimized(ctx.buffer, ctx.state);
+            SHA256Core::sha256_transform_optimized(ctx.digest, ctx.buffer);
         } else {
-            SHA256Core::sha256_transform(ctx.buffer, ctx.state);
+            SHA256Core::sha256_transform(ctx.digest, ctx.buffer);
         }
         
         total_hashes++;
         
-        // 每10万次哈希检查一次时间
+        // Check time every 100k hashes
         if (total_hashes % 100000 == 0) {
             if (std::chrono::steady_clock::now() >= end_time) {
                 break;
@@ -267,17 +267,17 @@ double MiningEngine::benchmark_performance(int duration_seconds) {
     double seconds = std::chrono::duration<double>(actual_duration).count();
     double hashrate = total_hashes / seconds;
     
-    handle_status_change("性能测试完成: " + MiningUtils::format_hashrate(hashrate));
+    handle_status_change("Performance test completed: " + MiningUtils::format_hashrate(hashrate));
     return hashrate;
 }
 
 void MiningEngine::initialize_workers() {
     std::lock_guard<std::mutex> lock(workers_mutex_);
     
-    // 清理现有工作线程
+    // Clean up existing worker threads
     cleanup_workers();
     
-    // 创建新的工作线程
+    // Create new worker threads
     workers_.reserve(config_.thread_count);
     for (int i = 0; i < config_.thread_count; ++i) {
         auto worker = std::make_unique<WorkerInfo>(i);
@@ -285,14 +285,14 @@ void MiningEngine::initialize_workers() {
         workers_.push_back(std::move(worker));
     }
     
-    // 分配nonce范围
+    // Distribute nonce ranges
     distribute_nonce_ranges();
     
-    // 启动工作线程
+    // Start worker threads
     for (auto& worker : workers_) {
         worker->worker_thread = std::thread(&MiningEngine::worker_thread_function, this, worker.get());
         
-        // 设置线程亲和性（如果支持）
+        // Set thread affinity (if supported)
         if (config_.enable_optimization) {
             MiningUtils::set_thread_affinity(worker->worker_thread, worker->worker_id);
         }
@@ -302,7 +302,7 @@ void MiningEngine::initialize_workers() {
 void MiningEngine::cleanup_workers() {
     std::lock_guard<std::mutex> lock(workers_mutex_);
     
-    // 等待所有工作线程结束
+    // Wait for all worker threads to finish
     for (auto& worker : workers_) {
         worker->state = WorkerState::STOPPED;
         if (worker->worker_thread.joinable()) {
@@ -317,7 +317,7 @@ void MiningEngine::worker_thread_function(WorkerInfo* worker) {
     worker->state = WorkerState::IDLE;
     
     while (!should_stop_ && worker->state != WorkerState::STOPPED) {
-        // 等待挖矿任务
+        // Wait for mining job
         std::unique_lock<std::mutex> lock(job_mutex_);
         job_condition_.wait(lock, [this] { 
             return job_available_ || should_stop_ || mining_paused_; 
@@ -332,11 +332,11 @@ void MiningEngine::worker_thread_function(WorkerInfo* worker) {
         
         if (!job_available_) continue;
         
-        // 复制当前任务
+        // Copy current job
         StratumJob job = current_job_;
         lock.unlock();
         
-        // 开始工作
+        // Start working
         worker->state = WorkerState::WORKING;
         process_mining_work(worker, job);
     }
@@ -354,24 +354,25 @@ bool MiningEngine::process_mining_work(WorkerInfo* worker, const StratumJob& job
     auto batch_start = std::chrono::steady_clock::now();
     
     for (uint32_t nonce = nonce_start; nonce < nonce_end && !should_stop_ && !mining_paused_; nonce++) {
-        // 构建区块头
+        // Build block header
         std::vector<uint8_t> block_header = StratumUtils::build_block_header(
             job, stratum_client_->get_subscription().extranonce1, 
             std::to_string(worker->worker_id), nonce);
         
-        // 计算SHA256哈希
+        // Calculate SHA256 hash
         if (config_.enable_optimization) {
-            SHA256Core::sha256_double_hash(block_header.data(), block_header.size(), hash);
+            SHA256Core::sha256_double_hash(reinterpret_cast<const uint32_t*>(block_header.data()), 
+                                         block_header.data() + 64, hash);
         } else {
-            SHA256Core::sha256_transform(block_header.data(), ctx.state);
-            memcpy(hash, ctx.state, 32);
+            SHA256Core::sha256_transform(ctx.digest, block_header.data());
+            memcpy(hash, ctx.digest, 32);
         }
         
         hashes_in_batch++;
         worker->hashes_done++;
         stats_.total_hashes++;
         
-        // 检查是否满足目标难度
+        // Check if meets target difficulty
         if (SHA256Core::check_target(hash, job.target_bytes)) {
             if (check_and_submit_share(job, nonce, hash, worker)) {
                 stats_.valid_shares++;
@@ -380,7 +381,7 @@ bool MiningEngine::process_mining_work(WorkerInfo* worker, const StratumJob& job
             }
         }
         
-        // 每批次更新统计信息
+        // Update statistics per batch
         if (hashes_in_batch >= config_.batch_size) {
             auto batch_end = std::chrono::steady_clock::now();
             auto duration = std::chrono::duration<double>(batch_end - batch_start).count();
@@ -389,7 +390,7 @@ bool MiningEngine::process_mining_work(WorkerInfo* worker, const StratumJob& job
             hashes_in_batch = 0;
             batch_start = batch_end;
             
-            // 获取新的nonce范围
+            // Get new nonce range
             uint32_t range_size = nonce_end - nonce_start;
             nonce_start = get_next_nonce_range(worker->worker_id, range_size);
             nonce_end = nonce_start + range_size;
@@ -402,15 +403,15 @@ bool MiningEngine::process_mining_work(WorkerInfo* worker, const StratumJob& job
 
 bool MiningEngine::check_and_submit_share(const StratumJob& job, uint32_t nonce, 
                                          const uint8_t* hash, WorkerInfo* worker) {
-    // 计算share难度
+    // Calculate share difficulty
     double share_difficulty = MiningUtils::calculate_share_difficulty(hash);
     
-    // 检查是否满足最小难度要求
+    // Check if meets minimum difficulty requirement
     if (share_difficulty < config_.target_difficulty) {
         return false;
     }
     
-    // 创建share
+    // Create share
     StratumShare share;
     share.job_id = job.job_id;
     share.extranonce2 = std::to_string(worker->worker_id);
@@ -418,10 +419,10 @@ bool MiningEngine::check_and_submit_share(const StratumJob& job, uint32_t nonce,
     share.nonce = nonce;
     share.worker_name = config_.username;
     
-    // 提交share
+    // Submit share
     bool success = stratum_client_->submit_share(share);
     
-    // 触发回调
+    // Trigger callback
     std::lock_guard<std::mutex> lock(callback_mutex_);
     if (share_found_callback_) {
         share_found_callback_(share, success);
@@ -435,27 +436,23 @@ void MiningEngine::on_job_received(const StratumJob& job) {
     current_job_ = job;
     job_available_ = true;
     
-    // 重新分配nonce范围
+    // Redistribute nonce ranges
     distribute_nonce_ranges();
     
     job_condition_.notify_all();
-    handle_status_change("收到新的挖矿任务: " + job.job_id);
+    handle_status_change("Received new mining task: " + job.job_id);
 }
 
 void MiningEngine::on_difficulty_changed(double difficulty) {
     config_.target_difficulty = difficulty;
-    handle_status_change("难度已更新: " + std::to_string(difficulty));
-}
-
-void MiningEngine::on_stratum_error(const std::string& error) {
-    handle_error("Stratum错误: " + error);
+    handle_status_change("Difficulty updated: " + std::to_string(difficulty));
 }
 
 void MiningEngine::on_connection_status(bool connected) {
     if (connected) {
-        handle_status_change("已连接到矿池");
+        handle_status_change("Connected to pool");
     } else {
-        handle_status_change("与矿池连接断开");
+        handle_status_change("Disconnected from pool");
         if (mining_active_) {
             pause_mining();
         }
@@ -480,7 +477,7 @@ void MiningEngine::update_hashrate() {
     auto duration = std::chrono::duration<double>(now - stats_.last_update).count();
     
     if (duration > 0) {
-        // 计算当前算力
+        // Calculate current hashrate
         uint64_t total_hashes = 0;
         {
             std::lock_guard<std::mutex> worker_lock(workers_mutex_);
@@ -491,7 +488,7 @@ void MiningEngine::update_hashrate() {
         
         stats_.current_hashrate = total_hashes / duration;
         
-        // 计算平均算力
+        // Calculate average hashrate
         auto total_duration = std::chrono::duration<double>(now - stats_.start_time).count();
         if (total_duration > 0) {
             stats_.average_hashrate = stats_.total_hashes / total_duration;
@@ -547,7 +544,7 @@ void MiningEngine::auto_reconnect_loop() {
         if (!reconnect_thread_running_) break;
         
         if (!stratum_client_->is_connected() && config_.auto_reconnect) {
-            handle_status_change("尝试重新连接到矿池...");
+            handle_status_change("Attempting to reconnect to pool...");
             if (connect_to_pool()) {
                 if (mining_active_ && mining_paused_) {
                     resume_mining();
@@ -557,7 +554,7 @@ void MiningEngine::auto_reconnect_loop() {
     }
 }
 
-// MiningUtils实现
+// MiningUtils implementation
 namespace MiningUtils {
     bool has_avx2_support() {
 #ifdef _WIN32
@@ -591,7 +588,7 @@ namespace MiningUtils {
         int cores = std::thread::hardware_concurrency();
         if (cores == 0) return 4;
         
-        // 对于挖矿，通常使用所有可用核心
+        // For mining, typically use all available cores
         return cores;
     }
     
@@ -654,7 +651,7 @@ namespace MiningUtils {
     }
     
     double calculate_share_difficulty(const uint8_t* hash) {
-        // 计算哈希的难度值
+        // Calculate hash difficulty value
         uint64_t hash_value = 0;
         for (int i = 0; i < 8; ++i) {
             hash_value = (hash_value << 8) | hash[31 - i];

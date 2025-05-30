@@ -1,0 +1,54 @@
+# PCMiner Configuration File
+# Copy this file to miner.conf and modify as needed
+
+# Mining Pool Configuration
+pool_host=stratum+tcp://pool.example.com
+pool_port=3333
+username=your_username
+password=your_password
+
+# Mining Settings
+threads=0                    # 0 = auto-detect CPU cores
+batch_size=1000             # Hashes per batch
+enable_avx2=true            # Enable AVX2 optimization
+enable_optimization=true    # Enable general optimizations
+
+# Network Settings
+connect_timeout=30          # Connection timeout in seconds
+retry_delay=5              # Delay between reconnection attempts
+max_retries=10             # Maximum reconnection attempts
+
+# Logging
+log_level=info             # debug, info, warning, error
+log_to_file=false          # Save logs to file
+log_file=miner.log         # Log file name
+
+# Performance
+benchmark_on_start=false   # Run benchmark on startup
+stats_interval=30          # Statistics update interval in seconds
+
+# Popular Mining Pools (uncomment one to use):
+
+# Slush Pool
+#pool_host=stratum+tcp://stratum.slushpool.com
+#pool_port=3333
+
+# F2Pool
+#pool_host=stratum+tcp://btc.f2pool.com
+#pool_port=3333
+
+# Antpool
+#pool_host=stratum+tcp://stratum.antpool.com
+#pool_port=3333
+
+# ViaBTC
+#pool_host=stratum+tcp://btc.viabtc.com
+#pool_port=3333
+
+# Poolin
+#pool_host=stratum+tcp://btc.ss.poolin.com
+#pool_port=1883
+
+# BTC.com
+#pool_host=stratum+tcp://stratum.btc.com
+#pool_port=3333 

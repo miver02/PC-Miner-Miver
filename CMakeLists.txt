@@ -15,7 +15,17 @@ endif()
 
 # 查找依赖包
 find_package(Threads REQUIRED)
-find_package(OpenSSL REQUIRED)
+
+# 查找 OpenSSL（可选）
+find_package(OpenSSL)
+if(OpenSSL_FOUND)
+    message(STATUS "OpenSSL found: ${OPENSSL_VERSION}")
+    add_definitions(-DHAVE_OPENSSL)
+    set(HAVE_OPENSSL TRUE)
+else()
+    message(WARNING "OpenSSL not found - SSL/TLS features will be disabled")
+    set(HAVE_OPENSSL FALSE)
+endif()
 
 # 包含目录
 include_directories(
@@ -41,9 +51,15 @@ set_target_properties(pcminer PROPERTIES OUTPUT_NAME "pcminer")
 # 链接库
 target_link_libraries(pcminer 
     Threads::Threads
-    OpenSSL::SSL
-    OpenSSL::Crypto
 )
+
+# 如果找到 OpenSSL，则链接 OpenSSL 库
+if(HAVE_OPENSSL)
+    target_link_libraries(pcminer 
+        OpenSSL::SSL
+        OpenSSL::Crypto
+    )
+endif()
 
 # Windows特定设置
 if(WIN32)

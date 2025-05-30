@@ -19,7 +19,7 @@
     #include <unistd.h>
 #endif
 
-// 简单的JSON解析器（轻量级实现）
+// Simple JSON parser (lightweight implementation)
 class SimpleJSON {
 public:
     static std::string get_string(const std::string& json, const std::string& key) {
@@ -65,7 +65,7 @@ public:
         
         std::string array_content = json.substr(pos, end - pos);
         
-        // 简单解析数组元素
+        // Simple array element parsing
         size_t start = 0;
         while (start < array_content.length()) {
             size_t quote_start = array_content.find("\"", start);
@@ -93,7 +93,7 @@ public:
     }
 };
 
-// StratumClient实现
+// StratumClient implementation
 StratumClient::StratumClient() 
     : socket_fd_(-1), port_(0), connected_(false), current_difficulty_(1.0), next_id_(1),
       shares_submitted_(0), shares_accepted_(0), shares_rejected_(0),
@@ -126,21 +126,21 @@ bool StratumClient::connect(const std::string& host, int port) {
         return false;
     }
     
-    // 解析主机名
+    // Resolve hostname
     struct hostent* he = gethostbyname(host.c_str());
     if (!he) {
         close_socket();
         return false;
     }
     
-    // 设置服务器地址
+    // Set server address
     struct sockaddr_in server_addr;
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(port);
     memcpy(&server_addr.sin_addr, he->h_addr_list[0], he->h_length);
     
-    // 连接到服务器
+    // Connect to server
     if (::connect(socket_fd_, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         close_socket();
         return false;
@@ -148,7 +148,7 @@ bool StratumClient::connect(const std::string& host, int port) {
     
     connected_ = true;
     
-    // 触发连接回调
+    // Trigger connection callback
     if (connect_callback_) {
         connect_callback_(true);
     }
@@ -245,7 +245,7 @@ bool StratumClient::create_socket() {
         return false;
     }
     
-    // 设置socket选项
+    // Set socket options
     int opt = 1;
     setsockopt(socket_fd_, SOL_SOCKET, SO_REUSEADDR, (char*)&opt, sizeof(opt));
     
@@ -314,14 +314,14 @@ void StratumClient::message_loop() {
             parse_json_response(line);
         }
         
-        // 短暂休眠避免CPU占用过高
+        // Short sleep to avoid high CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
 bool StratumClient::parse_json_response(const std::string& line) {
     try {
-        // 检查是否是方法调用
+        // Check if it's a method call
         if (line.find("\"method\"") != std::string::npos) {
             std::string method_str = SimpleJSON::get_string(line, "method");
             StratumMethod method = parse_method(method_str);
@@ -338,7 +338,7 @@ bool StratumClient::parse_json_response(const std::string& line) {
             return handle_response(line);
         }
     } catch (const std::exception& e) {
-        handle_error("JSON解析错误: " + std::string(e.what()));
+        handle_error("JSON parsing error: " + std::string(e.what()));
         return false;
     }
     
@@ -355,7 +355,7 @@ StratumMethod StratumClient::parse_method(const std::string& method_str) {
 
 bool StratumClient::handle_mining_notify(const std::string& json) {
     try {
-        // 解析mining.notify参数
+        // Parse mining.notify parameters
         std::vector<std::string> params = SimpleJSON::get_array(json, "params");
         if (params.size() < 9) return false;
         
@@ -365,19 +365,19 @@ bool StratumClient::handle_mining_notify(const std::string& json) {
         new_job.coinbase1 = params[2];
         new_job.coinbase2 = params[3];
         
-        // 解析merkle分支（这里需要更复杂的解析）
-        // 简化处理，实际应该解析嵌套数组
+        // Parse merkle branches (needs more complex parsing here)
+        // Simplified handling, should actually parse nested arrays
         
         new_job.version = params[5];
         new_job.nbits = params[6];
         new_job.ntime = params[7];
         new_job.clean_jobs = (params[8] == "true");
         
-        // 更新当前任务
+        // Update current job
         current_job_ = new_job;
         update_target_from_difficulty(current_difficulty_);
         
-        // 触发任务回调
+        // Trigger job callback
         std::lock_guard<std::mutex> lock(callback_mutex_);
         if (job_callback_) {
             job_callback_(current_job_);
@@ -385,7 +385,7 @@ bool StratumClient::handle_mining_notify(const std::string& json) {
         
         return true;
     } catch (const std::exception& e) {
-        handle_error("解析mining.notify失败: " + std::string(e.what()));
+        handle_error("Failed to parse mining.notify: " + std::string(e.what()));
         return false;
     }
 }
@@ -398,10 +398,10 @@ bool StratumClient::handle_mining_set_difficulty(const std::string& json) {
         double new_difficulty = std::stod(params[0]);
         current_difficulty_ = new_difficulty;
         
-        // 更新目标值
+        // Update target value
         update_target_from_difficulty(new_difficulty);
         
-        // 触发难度回调
+        // Trigger difficulty callback
         std::lock_guard<std::mutex> lock(callback_mutex_);
         if (difficulty_callback_) {
             difficulty_callback_(new_difficulty);
@@ -409,30 +409,30 @@ bool StratumClient::handle_mining_set_difficulty(const std::string& json) {
         
         return true;
     } catch (const std::exception& e) {
-        handle_error("解析mining.set_difficulty失败: " + std::string(e.what()));
+        handle_error("Failed to parse mining.set_difficulty: " + std::string(e.what()));
         return false;
     }
 }
 
 bool StratumClient::handle_response(const std::string& json) {
     try {
-        // 检查是否有错误
+        // Check for errors
         if (json.find("\"error\"") != std::string::npos && json.find("null") == std::string::npos) {
             std::string error_msg = SimpleJSON::get_string(json, "message");
             if (error_msg.empty()) {
-                error_msg = "未知错误";
+                error_msg = "Unknown error";
             }
             
             shares_rejected_++;
-            handle_error("提交被拒绝: " + error_msg);
+            handle_error("Share rejected: " + error_msg);
             return false;
         }
         
-        // 成功响应
+        // Success response
         if (json.find("\"result\"") != std::string::npos) {
-            // 检查是否是订阅响应
+            // Check if it's a subscription response
             if (json.find("[[") != std::string::npos) {
-                // 解析订阅响应
+                // Parse subscription response
                 std::vector<std::string> result = SimpleJSON::get_array(json, "result");
                 if (result.size() >= 2) {
                     subscription_.subscription_id = result[0];
@@ -442,7 +442,7 @@ bool StratumClient::handle_response(const std::string& json) {
                     }
                 }
             } else {
-                // 可能是share提交的成功响应
+                // Possibly a successful share submission response
                 shares_accepted_++;
             }
             return true;
@@ -450,7 +450,7 @@ bool StratumClient::handle_response(const std::string& json) {
         
         return true;
     } catch (const std::exception& e) {
-        handle_error("解析响应失败: " + std::string(e.what()));
+        handle_error("Failed to parse response: " + std::string(e.what()));
         return false;
     }
 }
@@ -524,24 +524,71 @@ void StratumClient::handle_connection_lost() {
     }
 }
 
-// StratumUtils实现
+// StratumUtils implementation
 namespace StratumUtils {
     void difficulty_to_target(double difficulty, uint8_t* target) {
-        // 比特币的最大目标值
-        static const uint8_t max_target[32] = {
-            0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00,
+        // Calculate target from difficulty
+        // target = max_target / difficulty
+        
+        // Maximum target (difficulty 1)
+        uint8_t max_target[32] = {
+            0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0x00, 0x1d,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         };
         
-        // 计算目标值 = max_target / difficulty
+        // Simple implementation: scale max_target by difficulty
         memcpy(target, max_target, 32);
         
-        // 简化的除法实现
+        // Adjust target based on difficulty (simplified)
         if (difficulty > 1.0) {
-            uint64_t* target_64 = reinterpret_cast<uint64_t*>(target);
-            target_64[0] = static_cast<uint64_t>(0x00000000FFFF0000ULL / difficulty);
+            uint64_t scale = static_cast<uint64_t>(difficulty);
+            for (int i = 31; i >= 0 && scale > 1; i--) {
+                uint64_t val = target[i];
+                val /= scale;
+                target[i] = static_cast<uint8_t>(val);
+                scale /= 256;
+                if (scale <= 1) break;
+            }
+        }
+    }
+    
+    bool check_target(const uint8_t* hash, const uint8_t* target) {
+        // Compare hash with target (hash must be less than target)
+        for (int i = 0; i < 32; i++) {
+            if (hash[i] < target[i]) return true;
+            if (hash[i] > target[i]) return false;
+        }
+        return false; // Equal is not valid
+    }
+    
+    std::string bytes_to_hex(const uint8_t* data, size_t len) {
+        std::stringstream ss;
+        ss << std::hex << std::setfill('0');
+        for (size_t i = 0; i < len; i++) {
+            ss << std::setw(2) << static_cast<unsigned>(data[i]);
+        }
+        return ss.str();
+    }
+    
+    void hex_to_bytes(const std::string& hex, uint8_t* data) {
+        for (size_t i = 0; i < hex.length(); i += 2) {
+            std::string byte_str = hex.substr(i, 2);
+            data[i/2] = static_cast<uint8_t>(std::stoul(byte_str, nullptr, 16));
+        }
+    }
+    
+    uint32_t reverse_bytes(uint32_t value) {
+        return ((value & 0xFF000000) >> 24) |
+               ((value & 0x00FF0000) >> 8)  |
+               ((value & 0x0000FF00) << 8)  |
+               ((value & 0x000000FF) << 24);
+    }
+    
+    void reverse_bytes(uint8_t* data, size_t length) {
+        for (size_t i = 0; i < length / 2; ++i) {
+            std::swap(data[i], data[length - 1 - i]);
         }
     }
     
@@ -575,24 +622,11 @@ namespace StratumUtils {
         return hex_encode(data.data(), data.size());
     }
     
-    uint32_t reverse_bytes(uint32_t value) {
-        return ((value & 0xFF000000) >> 24) |
-               ((value & 0x00FF0000) >> 8)  |
-               ((value & 0x0000FF00) << 8)  |
-               ((value & 0x000000FF) << 24);
-    }
-    
-    void reverse_bytes(uint8_t* data, size_t length) {
-        for (size_t i = 0; i < length / 2; ++i) {
-            std::swap(data[i], data[length - 1 - i]);
-        }
-    }
-    
     std::string calculate_merkle_root(const std::string& coinbase_hash, const std::vector<std::string>& merkle_branches) {
         std::string current_hash = coinbase_hash;
         
         for (const std::string& branch : merkle_branches) {
-            // 简化的merkle计算，实际需要SHA256双重哈希
+            // Simplified merkle calculation, actual implementation needs SHA256 double hash
             current_hash = current_hash + branch;
         }
         
@@ -603,31 +637,31 @@ namespace StratumUtils {
                                            const std::string& extranonce2, uint32_t nonce) {
         std::vector<uint8_t> header(80);
         
-        // 构建区块头（简化版本）
-        // 实际实现需要正确的字节序和字段排列
+        // Build block header (simplified version)
+        // Actual implementation needs correct byte order and field arrangement
         
-        // 版本 (4字节)
+        // Version (4 bytes)
         uint32_t version = std::stoul(job.version, nullptr, 16);
         memcpy(header.data(), &version, 4);
         
-        // 前一个区块哈希 (32字节)
+        // Previous block hash (32 bytes)
         std::vector<uint8_t> prev_hash = hex_decode(job.prev_block_hash);
         if (prev_hash.size() >= 32) {
             memcpy(header.data() + 4, prev_hash.data(), 32);
         }
         
-        // Merkle根 (32字节) - 需要计算
-        // 这里简化处理
+        // Merkle root (32 bytes) - needs calculation
+        // Simplified handling here
         
-        // 时间戳 (4字节)
+        // Timestamp (4 bytes)
         uint32_t timestamp = std::stoul(job.ntime, nullptr, 16);
         memcpy(header.data() + 68, &timestamp, 4);
         
-        // 难度目标 (4字节)
+        // Difficulty target (4 bytes)
         uint32_t bits = std::stoul(job.nbits, nullptr, 16);
         memcpy(header.data() + 72, &bits, 4);
         
-        // Nonce (4字节)
+        // Nonce (4 bytes)
         memcpy(header.data() + 76, &nonce, 4);
         
         return header;

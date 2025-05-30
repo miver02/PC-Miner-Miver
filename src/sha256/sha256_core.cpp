@@ -2,8 +2,9 @@
 #include <iostream>
 #include <chrono>
 #include <cstring>
+#include <algorithm>
 
-// SHA256常量K
+// SHA256 constants K
 const uint32_t K[64] = {
     0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5, 0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
     0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3, 0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
@@ -17,13 +18,13 @@ const uint32_t K[64] = {
 
 namespace SHA256Core {
 
-// 基础SHA256变换函数
+// Basic SHA256 transform function
 void sha256_transform(uint32_t state[8], const uint8_t block[64]) {
     uint32_t W[64];
     uint32_t a, b, c, d, e, f, g, h;
     uint32_t temp1, temp2;
     
-    // 准备消息调度数组
+    // Prepare message schedule array
     for (int i = 0; i < 16; i++) {
         W[i] = bswap32(((uint32_t*)block)[i]);
     }
@@ -32,11 +33,11 @@ void sha256_transform(uint32_t state[8], const uint8_t block[64]) {
         W[i] = gamma1(W[i-2]) + W[i-7] + gamma0(W[i-15]) + W[i-16];
     }
     
-    // 初始化工作变量
+    // Initialize working variables
     a = state[0]; b = state[1]; c = state[2]; d = state[3];
     e = state[4]; f = state[5]; g = state[6]; h = state[7];
     
-    // 主循环
+    // Main loop
     for (int i = 0; i < 64; i++) {
         temp1 = h + sigma1(e) + ch(e, f, g) + K[i] + W[i];
         temp2 = sigma0(a) + maj(a, b, c);
@@ -44,21 +45,21 @@ void sha256_transform(uint32_t state[8], const uint8_t block[64]) {
         d = c; c = b; b = a; a = temp1 + temp2;
     }
     
-    // 更新状态
+    // Update state
     state[0] += a; state[1] += b; state[2] += c; state[3] += d;
     state[4] += e; state[5] += f; state[6] += g; state[7] += h;
 }
 
-// 优化版SHA256变换 - 手动展开循环
-FORCE_INLINE void sha256_transform_optimized(uint32_t state[8], const uint8_t block[64]) {
-    uint32_t W[64] ALIGN(32);
+// Optimized SHA256 transform - manual loop unrolling
+void sha256_transform_optimized(uint32_t state[8], const uint8_t block[64]) {
+    ALIGN(32) uint32_t W[64];
     uint32_t a, b, c, d, e, f, g, h;
     
-    // 预取数据
+    // Prefetch data
     PREFETCH(block);
     PREFETCH(block + 32);
     
-    // 准备消息调度数组 - 展开前16个
+    // Prepare message schedule array - unroll first 16
     const uint32_t* block32 = (const uint32_t*)block;
     W[0] = bswap32(block32[0]);   W[1] = bswap32(block32[1]);
     W[2] = bswap32(block32[2]);   W[3] = bswap32(block32[3]);
@@ -69,7 +70,7 @@ FORCE_INLINE void sha256_transform_optimized(uint32_t state[8], const uint8_t bl
     W[12] = bswap32(block32[12]); W[13] = bswap32(block32[13]);
     W[14] = bswap32(block32[14]); W[15] = bswap32(block32[15]);
     
-    // 扩展消息调度数组 - 部分展开
+    // Extend message schedule array - partially unroll
     for (int i = 16; i < 64; i += 4) {
         W[i]   = gamma1(W[i-2])   + W[i-7]   + gamma0(W[i-15])   + W[i-16];
         W[i+1] = gamma1(W[i-1])   + W[i-6]   + gamma0(W[i-14])   + W[i-15];
@@ -77,11 +78,11 @@ FORCE_INLINE void sha256_transform_optimized(uint32_t state[8], const uint8_t bl
         W[i+3] = gamma1(W[i+1])   + W[i-4]   + gamma0(W[i-12])   + W[i-13];
     }
     
-    // 初始化工作变量
+    // Initialize working variables
     a = state[0]; b = state[1]; c = state[2]; d = state[3];
     e = state[4]; f = state[5]; g = state[6]; h = state[7];
     
-    // 主循环 - 展开8轮
+    // Main loop - unroll 8 rounds
     for (int i = 0; i < 64; i += 8) {
         uint32_t temp1, temp2;
         
@@ -126,21 +127,21 @@ FORCE_INLINE void sha256_transform_optimized(uint32_t state[8], const uint8_t bl
         h = g; g = f; f = e; e = d + temp1; d = c; c = b; b = a; a = temp1 + temp2;
     }
     
-    // 更新状态
+    // Update state
     state[0] += a; state[1] += b; state[2] += c; state[3] += d;
     state[4] += e; state[5] += f; state[6] += g; state[7] += h;
 }
 
-// 计算中间状态
+// Calculate intermediate state
 void sha256_midstate(uint32_t* digest, const uint8_t* data) {
     SHA256Context ctx;
     memcpy(digest, ctx.digest, 32);
     sha256_transform_optimized(digest, data);
 }
 
-// 优化版中间状态计算
-FORCE_INLINE void sha256_midstate_optimized(uint32_t* digest, const uint8_t* data) {
-    // 初始化SHA256状态
+// Optimized intermediate state calculation
+void sha256_midstate_optimized(uint32_t* digest, const uint8_t* data) {
+    // Initialize SHA256 state
     digest[0] = 0x6A09E667; digest[1] = 0xBB67AE85;
     digest[2] = 0x3C6EF372; digest[3] = 0xA54FF53A;
     digest[4] = 0x510E527F; digest[5] = 0x9B05688C;
@@ -149,30 +150,30 @@ FORCE_INLINE void sha256_midstate_optimized(uint32_t* digest, const uint8_t* dat
     sha256_transform_optimized(digest, data);
 }
 
-// SHA256双重哈希
+// SHA256 double hash
 bool sha256_double_hash(const uint32_t* midstate, const uint8_t* data, uint8_t* result) {
     uint32_t state[8];
-    uint8_t temp_hash[32] ALIGN(32);
-    uint8_t padded_block[64] ALIGN(64);
+    ALIGN(32) uint8_t temp_hash[32];
+    ALIGN(64) uint8_t padded_block[64];
     
-    // 复制中间状态
+    // Copy intermediate state
     memcpy(state, midstate, 32);
     
-    // 第一次哈希
+    // First hash
     sha256_transform_optimized(state, data);
     
-    // 转换为字节序并准备第二次哈希
+    // Convert to byte order and prepare second hash
     for (int i = 0; i < 8; i++) {
         ((uint32_t*)temp_hash)[i] = bswap32(state[i]);
     }
     
-    // 准备填充块
+    // Prepare padding block
     memset(padded_block, 0, 64);
     memcpy(padded_block, temp_hash, 32);
     padded_block[32] = 0x80;
-    ((uint32_t*)padded_block)[15] = bswap32(256); // 长度为256位
+    ((uint32_t*)padded_block)[15] = bswap32(256); // Length is 256 bits
     
-    // 重置状态进行第二次哈希
+    // Reset state for second hash
     state[0] = 0x6A09E667; state[1] = 0xBB67AE85;
     state[2] = 0x3C6EF372; state[3] = 0xA54FF53A;
     state[4] = 0x510E527F; state[5] = 0x9B05688C;
@@ -180,7 +181,7 @@ bool sha256_double_hash(const uint32_t* midstate, const uint8_t* data, uint8_t* 
     
     sha256_transform_optimized(state, padded_block);
     
-    // 输出结果
+    // Output result
     for (int i = 0; i < 8; i++) {
         ((uint32_t*)result)[i] = bswap32(state[i]);
     }
@@ -188,19 +189,19 @@ bool sha256_double_hash(const uint32_t* midstate, const uint8_t* data, uint8_t* 
     return true;
 }
 
-// 优化版双重哈希
-FORCE_INLINE bool sha256_double_hash_optimized(const uint32_t* midstate, const uint8_t* data, uint8_t* result) {
+// Optimized double hash
+bool sha256_double_hash_optimized(const uint32_t* midstate, const uint8_t* data, uint8_t* result) {
     return sha256_double_hash(midstate, data, result);
 }
 
-// 字节序转换
+// Byte order conversion
 void byte_reverse_words(uint32_t* out, const uint32_t* in, size_t count) {
     for (size_t i = 0; i < count; i++) {
         out[i] = bswap32(in[i]);
     }
 }
 
-// 检查目标难度
+// Check target difficulty
 bool check_target(const uint8_t* hash, const uint8_t* target) {
     for (int i = 31; i >= 0; i--) {
         if (hash[i] > target[i]) return false;
@@ -209,17 +210,16 @@ bool check_target(const uint8_t* hash, const uint8_t* target) {
     return true;
 }
 
-// 计算难度值
+// Calculate difficulty value
 double calculate_difficulty(const uint8_t* hash) {
-    // 找到第一个非零字节
+    // Simplified difficulty calculation - count leading zeros
     int leading_zeros = 0;
-    for (int i = 0; i < 32; i++) {
+    for (int i = 31; i >= 0; i--) {
         if (hash[i] == 0) {
             leading_zeros += 8;
         } else {
-            // 计算字节内的前导零
             uint8_t byte = hash[i];
-            while ((byte & 0x80) == 0 && leading_zeros < 256) {
+            while ((byte & 0x80) == 0 && byte != 0) {
                 leading_zeros++;
                 byte <<= 1;
             }
@@ -227,36 +227,63 @@ double calculate_difficulty(const uint8_t* hash) {
         }
     }
     
-    return static_cast<double>(1ULL << leading_zeros);
+    // Return difficulty value based on leading zeros count
+    return static_cast<double>(1ULL << std::min(leading_zeros, 63));
 }
 
-// 性能基准测试
+// SHA256 performance test
 void benchmark_sha256() {
     const int iterations = 1000000;
-    uint8_t data[64];
+    uint8_t test_data[64];
     uint32_t state[8];
     
-    // 初始化测试数据
+    // Initialize test data
     for (int i = 0; i < 64; i++) {
-        data[i] = i;
+        test_data[i] = static_cast<uint8_t>(i);
     }
     
     auto start = std::chrono::high_resolution_clock::now();
     
     for (int i = 0; i < iterations; i++) {
-        sha256_midstate_optimized(state, data);
+        sha256_transform_optimized(state, test_data);
     }
     
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
     
-    double hashes_per_second = (double)iterations / (duration.count() / 1000000.0);
-    
-    std::cout << "SHA256 Benchmark: " << hashes_per_second / 1000.0 << " kH/s" << std::endl;
+    std::cout << "SHA256 Benchmark: " << iterations << " iterations in " 
+              << duration.count() << " microseconds" << std::endl;
+    std::cout << "Rate: " << (iterations * 1000000.0 / duration.count()) 
+              << " hashes/second" << std::endl;
 }
 
+// Batch processing performance test
 void benchmark_batch_processing() {
-    std::cout << "Batch processing benchmark not implemented yet" << std::endl;
+    const uint32_t batch_size = 10000;
+    SHA256Context context;
+    uint8_t block_template[80];
+    BatchResult results[1000];
+    uint32_t found_count;
+    uint8_t target[32];
+    
+    // Initialize test data
+    memset(block_template, 0, 80);
+    memset(target, 0xFF, 32);
+    target[31] = 0x0F; // Simple target
+    
+    auto start = std::chrono::high_resolution_clock::now();
+    
+    sha256_batch_ultra_fast(&context, block_template, 0, batch_size, 
+                           results, &found_count, target);
+    
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    
+    std::cout << "Batch Processing Benchmark: " << batch_size << " hashes in " 
+              << duration.count() << " microseconds" << std::endl;
+    std::cout << "Rate: " << (batch_size * 1000000.0 / duration.count()) 
+              << " hashes/second" << std::endl;
+    std::cout << "Found " << found_count << " valid hashes" << std::endl;
 }
 
 } // namespace SHA256Core 

@@ -1,0 +1,5 @@
+D:\Download\git\GitWarehouse\PC-Miner-Miver\src\main.cpp;D:\Download\git\GitWarehouse\PC-Miner-Miver\build\pcminer.dir\Release\main.obj
+D:\Download\git\GitWarehouse\PC-Miner-Miver\src\sha256\sha256_core.cpp;D:\Download\git\GitWarehouse\PC-Miner-Miver\build\pcminer.dir\Release\sha256_core.obj
+D:\Download\git\GitWarehouse\PC-Miner-Miver\src\sha256\sha256_batch.cpp;D:\Download\git\GitWarehouse\PC-Miner-Miver\build\pcminer.dir\Release\sha256_batch.obj
+D:\Download\git\GitWarehouse\PC-Miner-Miver\src\network\stratum_client.cpp;D:\Download\git\GitWarehouse\PC-Miner-Miver\build\pcminer.dir\Release\stratum_client.obj
+D:\Download\git\GitWarehouse\PC-Miner-Miver\src\mining\mining_engine.cpp;D:\Download\git\GitWarehouse\PC-Miner-Miver\build\pcminer.dir\Release\mining_engine.obj

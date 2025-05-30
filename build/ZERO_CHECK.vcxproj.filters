@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Download\git\GitWarehouse\PC-Miner-Miver\build\CMakeFiles\79c7d97e0ae25c19ca1bdbec4d3b1e63\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C5265C5C-62AF-32C9-B54E-B5D83A451B39}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

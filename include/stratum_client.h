@@ -9,10 +9,10 @@
 #include <condition_variable>
 #include <functional>
 
-// 前向声明
+// Forward declarations
 struct sockaddr_in;
 
-// Stratum协议相关结构
+// Stratum protocol related structures
 struct StratumSubscription {
     std::string subscription_id;
     std::string extranonce1;
@@ -50,7 +50,7 @@ struct StratumShare {
     StratumShare() : nonce(0) {}
 };
 
-// Stratum方法枚举
+// Stratum method enumeration
 enum class StratumMethod {
     UNKNOWN,
     MINING_NOTIFY,
@@ -61,101 +61,101 @@ enum class StratumMethod {
     RESPONSE_ERROR
 };
 
-// Stratum客户端类
+// Stratum client class
 class StratumClient {
 public:
-    // 回调函数类型
+    // Callback function type
     using JobCallback = std::function<void(const StratumJob&)>;
     using DifficultyCallback = std::function<void(double)>;
     using ErrorCallback = std::function<void(const std::string&)>;
     using ConnectCallback = std::function<void(bool)>;
     
-    // 构造函数
+    // Constructor
     StratumClient();
     ~StratumClient();
     
-    // 基本连接管理
+    // Basic connection management
     bool connect(const std::string& host, int port);
     void disconnect();
     bool is_connected() const;
     
-    // Stratum协议操作
+    // Stratum protocol operations
     bool subscribe(const std::string& user_agent = "PCMiner/1.0");
     bool authorize(const std::string& username, const std::string& password = "x");
     bool submit_share(const StratumShare& share);
     bool suggest_difficulty(double difficulty);
     
-    // 设置回调函数
+    // Set callback functions
     void set_job_callback(JobCallback callback);
     void set_difficulty_callback(DifficultyCallback callback);
     void set_error_callback(ErrorCallback callback);
     void set_connect_callback(ConnectCallback callback);
     
-    // 获取当前状态
+    // Get current status
     const StratumSubscription& get_subscription() const { return subscription_; }
     const StratumJob& get_current_job() const { return current_job_; }
     double get_current_difficulty() const { return current_difficulty_; }
     
-    // 统计信息
+    // Statistics
     uint64_t get_shares_submitted() const { return shares_submitted_; }
     uint64_t get_shares_accepted() const { return shares_accepted_; }
     uint64_t get_shares_rejected() const { return shares_rejected_; }
     
-    // 网络统计
+    // Network statistics
     uint64_t get_bytes_sent() const { return bytes_sent_; }
     uint64_t get_bytes_received() const { return bytes_received_; }
     
-    // 启动/停止消息处理线程
+    // Start/stop message processing thread
     void start_message_loop();
     void stop_message_loop();
     
 private:
-    // 网络相关
+    // Network related
     int socket_fd_;
     std::string host_;
     int port_;
     std::atomic<bool> connected_;
     
-    // Stratum状态
+    // Stratum status
     StratumSubscription subscription_;
     StratumJob current_job_;
     double current_difficulty_;
     uint32_t next_id_;
     
-    // 统计信息
+    // Statistics
     std::atomic<uint64_t> shares_submitted_;
     std::atomic<uint64_t> shares_accepted_;
     std::atomic<uint64_t> shares_rejected_;
     std::atomic<uint64_t> bytes_sent_;
     std::atomic<uint64_t> bytes_received_;
     
-    // 回调函数
+    // Callback functions
     JobCallback job_callback_;
     DifficultyCallback difficulty_callback_;
     ErrorCallback error_callback_;
     ConnectCallback connect_callback_;
     
-    // 线程管理
+    // Thread management
     std::thread message_thread_;
     std::atomic<bool> stop_flag_;
     std::mutex send_mutex_;
     std::mutex callback_mutex_;
     
-    // 内部方法
+    // Internal methods
     bool create_socket();
     void close_socket();
     bool send_message(const std::string& message);
     std::string receive_line();
     void message_loop();
     
-    // JSON处理
+    // JSON processing
     bool parse_json_response(const std::string& line);
     StratumMethod parse_method(const std::string& method_str);
     bool handle_mining_notify(const std::string& json);
     bool handle_mining_set_difficulty(const std::string& json);
     bool handle_response(const std::string& json);
     
-    // 工具方法
+    // Utility methods
     std::string create_subscribe_message();
     std::string create_authorize_message(const std::string& username, const std::string& password);
     std::string create_submit_message(const StratumShare& share);
@@ -166,34 +166,37 @@ private:
     std::string hex_to_string(const std::string& hex);
     std::string string_to_hex(const std::string& str);
     
-    // 错误处理
+    // Error handling
     void handle_error(const std::string& error);
     void handle_connection_lost();
     
-    // 禁用拷贝
+    // Disable copy
     StratumClient(const StratumClient&) = delete;
     StratumClient& operator=(const StratumClient&) = delete;
 };
 
-// 工具函数
+// Utility functions
 namespace StratumUtils {
-    // 难度转换
+    // Difficulty conversion
     void difficulty_to_target(double difficulty, uint8_t* target);
     double target_to_difficulty(const uint8_t* target);
     
-    // 十六进制转换
+    // Target checking
+    bool check_target(const uint8_t* hash, const uint8_t* target);
+    
+    // Hexadecimal conversion
     std::vector<uint8_t> hex_decode(const std::string& hex);
     std::string hex_encode(const uint8_t* data, size_t length);
     std::string hex_encode(const std::vector<uint8_t>& data);
     
-    // 字节序转换
+    // Byte order conversion
     uint32_t reverse_bytes(uint32_t value);
     void reverse_bytes(uint8_t* data, size_t length);
     
-    // Merkle根计算
+    // Merkle root calculation
     std::string calculate_merkle_root(const std::string& coinbase_hash, const std::vector<std::string>& merkle_branches);
     
-    // 区块头构建
+    // Block header construction
     std::vector<uint8_t> build_block_header(const StratumJob& job, const std::string& extranonce1, 
                                            const std::string& extranonce2, uint32_t nonce);
 } 

@@ -8,6 +8,17 @@ REM For Windows Systems
 echo === PC Mining Program Build Script ===
 echo.
 
+REM Setup Visual Studio environment first
+echo Setting up Visual Studio environment...
+call "D:\Download\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x64 >nul 2>&1
+if errorlevel 1 (
+    echo Error: Failed to setup Visual Studio environment
+    echo Please check Visual Studio installation path
+    pause
+    exit /b 1
+)
+echo [OK] Visual Studio environment initialized
+
 REM Check system dependencies
 echo Checking system dependencies...
 
@@ -29,7 +40,27 @@ if errorlevel 1 (
     exit /b 1
 )
 
-echo [OK] All dependencies check passed
+REM Check vcpkg (optional)
+set USE_VCPKG=0
+if exist "vcpkg\scripts\buildsystems\vcpkg.cmake" (
+    echo [OK] vcpkg found, will use vcpkg toolchain   
+    set USE_VCPKG=1
+) else (
+    echo [NO] vcpkg not found, trying manual OpenSSL detection
+    REM Try to set OpenSSL path manually
+    if exist "C:\Program Files\OpenSSL-Win64" (
+        set OPENSSL_ROOT_DIR=C:\Program Files\OpenSSL-Win64
+        echo [OK] Found OpenSSL at: %OPENSSL_ROOT_DIR%
+    ) else (
+        echo [NO] OpenSSL not found. You may need to:
+        echo     1. Install OpenSSL manually, or
+        echo     2. Run install_dependencies.bat to install vcpkg
+        echo.
+        echo Continuing anyway, some features may not work...
+    )
+)
+
+echo [OK] Dependencies check completed
 echo.
 
 REM Get CPU information
@@ -60,14 +91,21 @@ cd build
 
 REM Configure build
 echo Configuring CMake...
-cmake .. -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release
+if %USE_VCPKG%==1 (
+    echo Using vcpkg toolchain...
+    cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=..\vcpkg\scripts\buildsystems\vcpkg.cmake
+) else (
+    echo Using standard configuration...
+    cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+)
 
 if errorlevel 1 (
     echo Error: CMake configuration failed
-    echo Trying alternative generator...
-    cmake .. -G "Visual Studio 15 2017" -A x64 -DCMAKE_BUILD_TYPE=Release
+    echo Trying without specific OpenSSL settings...
+    cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="" -DOpenSSL_FIND_QUIETLY=ON
     if errorlevel 1 (
-        echo Error: CMake configuration failed, please check Visual Studio installation
+        echo Error: CMake configuration failed
+        echo Please check your CMakeLists.txt and dependencies
         pause
         exit /b 1
     )
@@ -120,16 +158,21 @@ if exist "Release\pcminer.exe" (
     echo   pcminer.exe -p pool.com -P 3333 -u user  # Start mining
     echo.
     echo Recommended configuration:
-    echo   Thread count: %CPU_CORES% (CPU cores)
+    echo   Thread count: %CPU_CORES% ^(CPU cores^)
     echo   Batch size: 1000000
     echo   AVX2 optimization: Auto-detect
     echo.
     
     REM Copy to root directory for convenience
-    copy Release\pcminer.exe ..\pcminer.exe >nul
+    copy Release\pcminer.exe ..\pcminer.exe >nul 2>&1
     if not errorlevel 1 (
         echo [OK] Executable copied to root directory
+    ) else (
+        echo [WARNING] Failed to copy executable to root directory
     )
+    
+    echo.
+    echo === BUILD SUCCESSFUL ===
     
 ) else (
     echo Error: Generated executable not found
